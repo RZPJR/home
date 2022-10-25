@@ -4,7 +4,9 @@ import singleSpaVue from "single-spa-vue";
 
 import App from "./App.vue";
 import router from "./router";
+import store from "./store";
 import http from './plugins/axios'
+import Http from './services/http'
 import vuetify from './plugins/vuetify';
 
 Vue.config.productionTip = false;
@@ -410,9 +412,11 @@ Vue.mixin({
 const vueLifecycles = singleSpaVue({
   Vue,
   appOptions: {
+    created: () => Http.init(),
     render: h => h(App),
     vuetify,
-    router
+    router, 
+    store,
   }
 });
 
