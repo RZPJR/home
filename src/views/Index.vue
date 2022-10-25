@@ -73,15 +73,15 @@
                 <v-col cols="12" md="12">
                     <v-card>
                         <v-progress-linear
-                            v-if="!loaded"
+                            v-if="graph.isLoading"
                             indeterminate
                             color="#50ABA3"
                         ></v-progress-linear>
                     </v-card>
                     <line-chart
                         class="pt-3"
-                        v-if="loaded"
-                        :chartData="chartData"
+                        v-if="!graph.isLoading"
+                        :chartData="graph"
                     ></line-chart>
                 </v-col>
             </v-row>
@@ -90,7 +90,7 @@
             <v-row>
                 <v-col cols="12" md="4">
                     <div class="box-col24">
-                        <v-row class="text-secondary" v-if="!comload">
+                        <v-row class="text-secondary" v-if="!overview.isLoading">
                             <v-col cols="12" md="10"> Transaction </v-col>
                             <v-col cols="12" md="2" class="flex-align-end">
                                 <img
@@ -101,14 +101,14 @@
                                 />
                             </v-col>
                         </v-row>
-                        <v-row v-if="!comload">
+                        <v-row v-if="!overview.isLoading">
                             <v-col class="flex-align-end fs24 bold">
-                                {{ formatNumberTransaction(total_transaction) }}
+                                {{ formatNumberTransaction(overview.total_transaction) }}
                             </v-col>
                         </v-row>
                         <v-card>
                             <v-progress-linear
-                                v-if="comload"
+                                v-if="overview.isLoading"
                                 indeterminate
                                 color="#50ABA3"
                             ></v-progress-linear>
@@ -117,7 +117,7 @@
                 </v-col>
                 <v-col cols="12" md="4">
                     <div class="box-col24">
-                        <v-row class="text-secondary" v-if="!comload">
+                        <v-row class="text-secondary" v-if="!overview.isLoading">
                             <v-col cols="12" md="10"> Total Price (Rp) </v-col>
                             <v-col cols="12" md="2" class="flex-align-end">
                                 <img
@@ -128,14 +128,14 @@
                                 />
                             </v-col>
                         </v-row>
-                        <v-row v-if="!comload">
+                        <v-row v-if="!overview.isLoading">
                             <v-col class="flex-align-end fs24 bold">
-                                {{ formatPrice(total_charge) }}
+                                {{ formatPrice(overview.total_charge) }}
                             </v-col>
                         </v-row>
                         <v-card>
                             <v-progress-linear
-                                v-if="comload"
+                                v-if="overview.isLoading"
                                 indeterminate
                                 color="#50ABA3"
                             ></v-progress-linear>
@@ -144,7 +144,7 @@
                 </v-col>
                 <v-col cols="12" md="4">
                     <div class="box-col24">
-                        <v-row class="text-secondary" v-if="!comload">
+                        <v-row class="text-secondary" v-if="!overview.isLoading">
                             <v-col cols="12" md="10"> Tonnage (Kg) </v-col>
                             <v-col cols="12" md="2" class="flex-align-end">
                                 <img
@@ -155,14 +155,14 @@
                                 />
                             </v-col>
                         </v-row>
-                        <v-row v-if="!comload">
+                        <v-row v-if="!overview.isLoading">
                             <v-col class="flex-align-end fs24 bold">
-                                {{ formatNumber(total_weight) }}
+                                {{ formatNumber(overview.total_weight) }}
                             </v-col>
                         </v-row>
                         <v-card>
                             <v-progress-linear
-                                v-if="comload"
+                                v-if="overview.isLoading"
                                 indeterminate
                                 color="#50ABA3"
                             ></v-progress-linear>
@@ -191,8 +191,8 @@
             <v-data-table
                 :headers="table.fields"
                 :mobile-breakpoint="0"
-                :items="items"
-                :loading="loading"
+                :items="overview.top_revenue"
+                :loading="overview.isLoading"
                 :items-per-page="5"
             >
                 <template v-slot:item="props">
@@ -209,6 +209,7 @@
 <script>
 import LineChart from "../components/LineChart.vue";
 import { ImageAvaUser } from "@vue-mf/global";
+import { mapState, mapActions } from 'vuex';
 
 export default {
     components: { LineChart, ImageAvaUser },
@@ -216,31 +217,13 @@ export default {
     data() {
         return {
         priv: localStorage.getItem("priv"),
-        loaded: false,
-        chartData: {
-            labels: [],
-            datasets: [
-            {
-                label: "Total Price",
-                fill: false,
-                borderColor: "#8DC53F",
-                borderWidth: 3,
-                data: [],
-            },
-            ],
-        },
         ava_user:'',
         modeDesktop: null,
         months: null,
         years: null,
         selectedDate: null,
-        comload: false,
         absolute: true,
-        loading: false,
         opacity: 0.1,
-        total_transaction: "",
-        total_charge: "",
-        total_weight: "",
         currentDate: null,
         monthsItems: [],
         yearsItems: [],
@@ -259,10 +242,13 @@ export default {
             },
             ],
         },
-        items: [],
         };
     },
     methods: {
+        ...mapActions([
+            'fetchOverview',
+            'fetchGraph'
+        ]),
         formatPrice(value) {
             let val = (value / 1).toFixed(2).replace(".", ",");
             return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -278,57 +264,12 @@ export default {
         async search() {
             if (this.priv.includes("sls_dash_rd")) {
                 this.ava_user = ImageAvaUser
-                console.log(this.ava_user,'eeeeeeeeeeeee')
-                this.comload = true;
-                this.loading = true;
-                this.loaded = false;
                 const dates = this.months + "-" + this.years;
                 this.selectedDate =
                 this.monthsItems[this.months - 1].text + " " + this.years;
-                this.items = [];
-                this.$http
-                .get("/dashboard/overview", {
-                    params: {
-                        date: dates,
-                    },
-                })
-                .then((response) => {
-                    if (response) {
-                        this.total_transaction = response.data.data.total_transaction;
-                        this.total_charge = response.data.data.total_charge;
-                        this.total_weight = response.data.data.total_weight;
-                        this.comload = false;
-                        this.items = response.data.data.top_revenue;
-                        this.loading = false;
-                        if (this.items === null) {
-                            this.items = [];
-                        }
-                    }
-                });
-
-                this.$http
-                .get("/dashboard/graph", {
-                    params: {
-                        date: dates,
-                    },
-                })
-                .then((response) => {
-                    if (response) {
-                        let arr = response.data.data;
-                        this.chartData.labels = [];
-                        this.chartData.datasets[0].data = [];
-                        for (let i = 0; i < arr.length; i++) {
-                            if (response.data.data.length > 0) {
-                                this.chartData.labels.push(response.data.data[i].day);
-                                this.chartData.datasets[0].data.push(
-                                    response.data.data[i].total_price
-                                );
-                            }
-                        }
-                        this.loaded = true;
-                        this.comload = false;
-                    }
-                });
+                
+                this.fetchOverview(dates)
+                this.fetchGraph(dates)
             }
         },
         checkMaintenance() {
@@ -372,6 +313,10 @@ export default {
         this.staffname = localStorage.getItem('staff_name')
     },
     computed: {
+        ...mapState({
+            overview: (state) => state.home.overview,
+            graph: (state) => state.home.graph,
+        }),
         searchDisable() {
             return !(this.months && this.years);
         },
