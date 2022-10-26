@@ -5,13 +5,14 @@ import singleSpaVue from "single-spa-vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
-import http from "./plugins/axios";
 import Http from "./services/http";
 import vuetify from "./plugins/vuetify";
+import VueToast from 'vue-toast-notification';
+import 'vue-toast-notification/dist/theme-sugar.css';
 
 Vue.config.productionTip = false;
-Vue.use(http);
 Vue.use(require("vue-moment"));
+Vue.use(VueToast);
 
 // ini untuk privilege
 Vue.directive("privilege", {
