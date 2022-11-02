@@ -4,7 +4,6 @@ WORKDIR /app
 COPY . .
 
 RUN npm install
-RUN npm install -g @vue/cli
 RUN npm run build
 
 FROM nginx:1.23-alpine
