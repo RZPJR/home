@@ -1,0 +1,89 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fe-home
+  labels:
+    app: fe-home
+  namespace: fe-home
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fe-home
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: fe-home
+    spec:
+      imagePullSecrets:
+      - name: registry
+      containers:
+      - name: fe-home
+        image: git.edenfarm.id:5050/project-version3/erp-dashboard/home/dev:<VERSION>
+        ports:
+          - name: http-port
+            containerPort: 8080
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: 150Mi
+            cpu: 100m
+          limits:
+            memory: 500Mi
+            cpu: 300m
+        volumeMounts:
+        - name: tz-config
+          mountPath: /etc/localtime
+      volumes:
+        - name: tz-config
+          hostPath:
+            path: /usr/share/zoneinfo/Asia/Jakarta
+            type: File
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-fe-home
+  namespace: fe-home
+  labels:
+    app: fe-home
+spec:
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: http-port
+  selector:
+    app: fe-home
+---
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: hpa-fe-home
+  namespace: fe-home
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: fe-home
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 75
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 75
