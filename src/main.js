@@ -5,7 +5,7 @@ import singleSpaVue from "single-spa-vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
-import Http from "./services/http";
+import http from "./services/http";
 import vuetify from "./plugins/vuetify";
 import VueToast from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-sugar.css';
@@ -474,7 +474,7 @@ Vue.mixin({
 const vueLifecycles = singleSpaVue({
   Vue,
   appOptions: {
-    created: () => Http.init(),
+    created: () => http.init(),
     render: h => h(App),
     vuetify,
     router,
