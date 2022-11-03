@@ -1,4 +1,8 @@
 const state = {
+  staff: localStorage.getItem("staff_name"),
+  priv: localStorage.getItem("priv"),
+  selectedDate: null,
+  currentDate: null,
   overview: {
     isLoading: false,
     total_transaction: "",

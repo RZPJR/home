@@ -30,6 +30,14 @@ const mutations = {
   setGraphDataSet: function(state, payload) {
     state.graph.datasets = payload;
     return state;
+  },
+  setSelectedDate: function(state, payload) {
+    state.selectedDate = payload;
+    return state;
+  },
+  setCurrentDate: function(state, payload) {
+    state.currentDate = payload;
+    return state;
   }
 };
 

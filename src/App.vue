@@ -12,6 +12,7 @@
 
 #container {
   margin-left: 220px;
+  min-height: 100vh;
 }
 </style>
 
