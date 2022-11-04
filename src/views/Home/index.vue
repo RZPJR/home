@@ -1,5 +1,5 @@
 <template>
-    <v-container class="main-container">
+    <v-container class="main-container" style="padding-right: 36px">
         <!-- Header -->
         <div class="box">
             <v-row>
