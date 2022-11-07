@@ -1,5 +1,5 @@
 <template>
-    <v-container class="main-container" style="padding-right: 36px">
+    <v-container fill-height class="main-container">
         <!-- Header -->
         <div class="box">
             <v-row>
