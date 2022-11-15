@@ -115,15 +115,16 @@
                 }
             },
             getOptionDate() { // get total months and year
+                const today = new Date();
+                const monthNames = ["January", "February", "March", "April", "May", "June",
+                    "July", "August", "September", "October", "November", "December"
+                ];
                 for (let i = 0; i < 12; i++) {
                     this.monthsItems.push({
-                    text: this.$moment()
-                        .month(i)
-                        .format("MMMM"),
-                    value: i + 1
+                        text: monthNames[i],
+                        value: i + 1
                     });
                 }
-                const today = new Date();
                 const y = today.getFullYear();
                 for (let i = 2019; i <= y; i++) {
                     this.yearsItems.push({ text: String(i), value: i });
