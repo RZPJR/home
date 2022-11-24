@@ -8,7 +8,7 @@
             </v-col>
             <v-col cols="12" md="11" class="flex-justify-center fs20 bold">
                 <!-- Welcome {{ staff }}! -->
-                Welcome!
+                Welcommmmmmmmmmmmmmmmmmme!
             </v-col>
             </v-row>
         </div>
