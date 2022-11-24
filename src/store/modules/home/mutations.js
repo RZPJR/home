@@ -38,6 +38,10 @@ const mutations = {
   setCurrentDate: function(state, payload) {
     state.currentDate = payload;
     return state;
+  },
+  setStaffName: function(state, payload) {
+    state.staff_name = payload;
+    return state;
   }
 };
 
