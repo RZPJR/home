@@ -3,6 +3,7 @@ const state = {
   priv: localStorage.getItem("priv"),
   selectedDate: null,
   currentDate: null,
+  staff_name: '',
   overview: {
     isLoading: false,
     total_transaction: "",

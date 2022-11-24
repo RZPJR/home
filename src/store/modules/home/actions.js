@@ -50,6 +50,15 @@ const actions = {
             commit("setPreloadGraph", false);
         }
     },  
+    fetchStaff: async ({ commit, dispatch }, payload) => {
+        try {
+            const response = await http.get("/user");
+            const res = response.data.data;
+            commit("setStaffName", res.nickname)
+        } catch (error) {
+            console.log(error)
+        }
+    },
     checkMaintenance: async () => {
         try {
             let API_URL = process.env.VUE_APP_API_URL

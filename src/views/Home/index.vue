@@ -7,15 +7,16 @@
                 <v-img width="64px" height="64px" :src="ava_user"></v-img>
             </v-col>
             <v-col cols="12" md="11" class="flex-justify-center fs20 bold">
-                Welcome {{ staff }}!
+                <!-- Welcome {{ staff }}! -->
+                Welcome!
             </v-col>
             </v-row>
         </div>
-        <!-- Filter & Graph -->
+        <!-- Filter & Graph
         <Graph />
-        <!-- Overview -->
+        Overview
         <Overview />
-        <!-- Table Title -->
+        Table Title
         <div class="box-title bg-linier text-white" v-privilege="'sls_dash_rd'">
             <div class="fs16 bold">
                 Top Products
@@ -32,8 +33,8 @@
                 {{ selectedDate == null ? currentDate : selectedDate }}
             </div>
         </div>
-        <!-- Top Product -->
-        <TopProducts />
+        Top Product
+        <TopProducts /> -->
     </v-container>
 </template>
 
@@ -54,18 +55,20 @@
         },
         computed: {
             ...mapState({
-                staff: state => state.home.staff,
+                staff: state => state.home.staff_name,
                 selectedDate: state => state.home.selectedDate,
                 currentDate: state => state.home.currentDate,
             }),
         },
         methods: {
             ...mapActions([
-                "checkMaintenance"
+                "checkMaintenance",
+                "fetchStaff"
             ]),
         },
         mounted() {
-            this.checkMaintenance();
+            // this.checkMaintenance();
+            // this.fetchStaff()
         },
         created() {
             this.ava_user = ImageAvaUser
