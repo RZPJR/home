@@ -95,7 +95,7 @@ metadata:
   namespace: fe-home
 spec:
   dnsNames:
-    - home.edenfarm.tech
+    - fe-home.edenfarm.tech
   secretName: fe-home-tls
   issuerRef:
     name: letsencrypt-cluster-issuer
@@ -111,10 +111,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - home.edenfarm.tech
+    - fe-home.edenfarm.tech
     secretName: fe-home-tls
   rules:
-  - host: home.edenfarm.tech
+  - host: fe-home.edenfarm.tech
     http:
       paths:
       - path: /
