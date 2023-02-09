@@ -4,7 +4,7 @@ import Home from "../views/Home";
 
 Vue.use(VueRouter);
 
-const routes = [{ path: "/Home", component: Home }];
+const routes = [{ path: "/Home", component: Home, meta: {title: 'Home'} }];
 
 const router = new VueRouter({
   mode: "history",
