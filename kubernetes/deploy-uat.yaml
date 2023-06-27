@@ -25,7 +25,7 @@ spec:
       - name: registry
       containers:
       - name: fe-home
-        image: git.edenfarm.id:5050/project-version3/erp-dashboard/home/dev:<VERSION>
+        image: git.edenfarm.id:5050/project-version3/erp-dashboard/home/uat:<VERSION>
         ports:
           - name: http-port
             containerPort: 8080
@@ -35,8 +35,8 @@ spec:
             memory: 50Mi
             cpu: 15m
           limits:
-            memory: 150Mi
-            cpu: 100m
+            memory: 350Mi
+            cpu: 200m
         volumeMounts:
         - name: tz-config
           mountPath: /etc/localtime
@@ -118,7 +118,7 @@ metadata:
   namespace: fe-home
 spec:
   dnsNames:
-    - fe-home.edenfarm.tech
+    - uat-fe-home.edenfarm.tech
   secretName: fe-home-tls
   issuerRef:
     name: letsencrypt-cluster-issuer
@@ -134,10 +134,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - fe-home.edenfarm.tech
+    - uat-fe-home.edenfarm.tech
     secretName: fe-home-tls
   rules:
-  - host: fe-home.edenfarm.tech
+  - host: uat-fe-home.edenfarm.tech
     http:
       paths:
       - path: /
