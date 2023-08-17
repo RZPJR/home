@@ -1,3 +1,19 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: fe-home
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: registry
+  namespace: fe-home
+data:
+  .dockerconfigjson: ewoJImF1dGhzIjogewoJCSJnaXQuZWRlbmZhcm0uaWQ6NTA1MCI6IHsKCQkJImF1dGgiOiAiYkdsdVoyZHZPbnBDU2xwTldYRk9OVlJWT0ZaNlJ6YzRhRzloIgoJCX0KCX0KfQ==
+type: kubernetes.io/dockerconfigjson
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -27,8 +43,8 @@ spec:
       - name: fe-home
         image: git.edenfarm.id:5050/project-version3/erp-dashboard/home/dev:<VERSION>
         ports:
-          - name: http-port
-            containerPort: 8080
+        - name: http-port
+          containerPort: 8080
         imagePullPolicy: Always
         resources:
           requests:
@@ -41,33 +57,33 @@ spec:
         - name: tz-config
           mountPath: /etc/localtime
       volumes:
-        - name: tz-config
-          hostPath:
-            path: /usr/share/zoneinfo/Asia/Jakarta
-            type: File
-      tolerations:
-      - key: instance_type
-        value: service
-        effect: NoSchedule
-        operator: Equal
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: role
-                operator: In
-                values:
-                - devops
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: app
-                operator: In
-                values:
-                - fe-home
-            topologyKey: kubernetes.io/hostname
+      - name: tz-config
+        hostPath:
+          path: /usr/share/zoneinfo/Asia/Jakarta
+          type: File
+          # tolerations:
+          # - key: instance_type
+          #   value: service
+          #   effect: NoSchedule
+          #   operator: Equal
+          # affinity:
+          #   nodeAffinity:
+          #     requiredDuringSchedulingIgnoredDuringExecution:
+          #       nodeSelectorTerms:
+          #       - matchExpressions:
+          #         - key: role
+          #           operator: In
+          #           values:
+          #           - devops
+          #   podAntiAffinity:
+          #     requiredDuringSchedulingIgnoredDuringExecution:
+          #     - labelSelector:
+          #         matchExpressions:
+          #         - key: app
+          #           operator: In
+          #           values:
+          #           - fe-home
+          #       topologyKey: kubernetes.io/hostname
 ---
 apiVersion: v1
 kind: Service
@@ -118,7 +134,7 @@ metadata:
   namespace: fe-home
 spec:
   dnsNames:
-    - fe-home.edenfarm.tech
+  - dev-fe-home.edenfarm.tech
   secretName: fe-home-tls
   issuerRef:
     name: letsencrypt-cluster-issuer
@@ -134,10 +150,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - fe-home.edenfarm.tech
+    - dev-fe-home.edenfarm.tech
     secretName: fe-home-tls
   rules:
-  - host: fe-home.edenfarm.tech
+  - host: dev-fe-home.edenfarm.tech
     http:
       paths:
       - path: /
