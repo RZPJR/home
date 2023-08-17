@@ -134,7 +134,7 @@ metadata:
   namespace: fe-home
 spec:
   dnsNames:
-  - dev-fe-home.edenfarm.tech
+  - fe-home.edenfarm.tech
   secretName: fe-home-tls
   issuerRef:
     name: letsencrypt-cluster-issuer
@@ -145,15 +145,16 @@ kind: Ingress
 metadata:
   namespace: fe-home
   annotations:
-    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/rewrite-target: /
   name: fe-home
 spec:
+  ingressClassName: nginx
   tls:
   - hosts:
-    - dev-fe-home.edenfarm.tech
+    - fe-home.edenfarm.tech
     secretName: fe-home-tls
   rules:
-  - host: dev-fe-home.edenfarm.tech
+  - host: fe-home.edenfarm.tech
     http:
       paths:
       - path: /
