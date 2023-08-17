@@ -41,7 +41,7 @@ spec:
       - name: registry
       containers:
       - name: fe-home
-        image: git.edenfarm.id:5050/project-version3/erp-dashboard/home/eks-dev:<VERSION>
+        image: git.edenfarm.id:5050/project-version3/erp-dashboard/home/dev:<VERSION>
         ports:
         - name: http-port
           containerPort: 8080
@@ -134,7 +134,7 @@ metadata:
   namespace: fe-home
 spec:
   dnsNames:
-  - fe-home.edenfarm.tech
+  - dev-fe-home.edenfarm.tech
   secretName: fe-home-tls
   issuerRef:
     name: letsencrypt-cluster-issuer
@@ -150,10 +150,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - fe-home.edenfarm.tech
+    - dev-fe-home.edenfarm.tech
     secretName: fe-home-tls
   rules:
-  - host: fe-home.edenfarm.tech
+  - host: dev-fe-home.edenfarm.tech
     http:
       paths:
       - path: /
