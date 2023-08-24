@@ -2,6 +2,8 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: fe-home
+  labels:
+    app: fe-home
 
 ---
 apiVersion: v1
@@ -40,7 +42,7 @@ spec:
       - name: registry
       containers:
       - name: fe-home
-        image: git.edenfarm.id:5050/project-version3/erp-dashboard/home/master:<VERSION>
+        image: git.edenfarm.id:5050/project-version3/erp-dashboard/home/uat:<VERSION>
         ports:
           - name: http-port
             containerPort: 8080
@@ -133,7 +135,7 @@ metadata:
   namespace: fe-home
 spec:
   dnsNames:
-    - fe-home.edenfarm.id
+    - uat-fe-home.edenfarm.tech
   secretName: fe-home-tls
   issuerRef:
     name: letsencrypt-cluster-issuer
@@ -144,16 +146,15 @@ kind: Ingress
 metadata:
   namespace: fe-home
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    kubernetes.io/ingress.class: "nginx"
   name: fe-home
 spec:
-  ingressClassName: nginx
   tls:
   - hosts:
-    - fe-home.edenfarm.id
+    - uat-fe-home.edenfarm.tech
     secretName: fe-home-tls
   rules:
-  - host: fe-home.edenfarm.id
+  - host: uat-fe-home.edenfarm.tech
     http:
       paths:
       - path: /
